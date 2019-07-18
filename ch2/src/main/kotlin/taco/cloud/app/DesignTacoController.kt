@@ -2,10 +2,12 @@ package taco.cloud.app
 
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
+import org.springframework.validation.Errors
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import java.util.Arrays.asList
+import javax.validation.Valid
 
 
 @Controller
@@ -32,13 +34,14 @@ class DesignTacoController : Logging{
             .map { model.addAttribute(it.key.toString().toLowerCase(), it.value) }
 
         model.addAttribute("design", Taco())
-
         return "design"
     }
 
     @PostMapping
-    fun processDesign(taco: Taco): String {
+    fun processDesign(@Valid taco: Taco, errors: Errors): String {
         logger().info("Taco Design: $taco")
+
+        if (errors.hasErrors()) return "design"
 
         return "redirect:/orders/current"
     }
